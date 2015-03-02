@@ -49,9 +49,8 @@ var cpGen = module.exports = yeoman.Base.extend({
     ));
 
     this.log(chalk.cyan(
-      '\nGenerate a light weight development environment for hacking around ideas.\n' +
-      'When you\'ve completed your masterpiece, you can publish it straight to Codepen!\n' +
-      'Or not... The choice is yours. Hack on, my friend!\n'
+      '\nGenerate a light weight development environment for hacking around ideas.\n'
+      // 'When you\'ve completed your masterpiece, you can publish it straight to Codepen!\n'
     ));
 
     // Get Propmts
