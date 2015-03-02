@@ -7,7 +7,7 @@ var express     = require('express')
   , gulp        = require('gulp')
   , rename      = require('gulp-rename')
   , watch       = require('gulp-watch')
-  , livereload  = require('gulp-livereload'),
+  , livereload  = require('gulp-livereload')
   , injectRL    = require('gulp-inject-reload');
 
 // Define Gulp Paths
