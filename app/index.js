@@ -148,7 +148,7 @@ var cpGen = module.exports = yeoman.Base.extend({
     // Where conflicts are handled (used internally)
   },
   install: function(){
-    var baseNodeDeps  = ['express', 'hogan-express', 'wiredep', 'gulp', 'gulp-rename', 'gulp-livereload', 'gulp-inject-reload', 'gulp-watch']
+    var baseNodeDeps  = ['express', 'hogan-express', 'wiredep', 'gulp', 'gulp-rename', 'gulp-livereload', 'gulp-inject-reload', 'gulp-watch', 'gulp-inject', 'escape-html']
       , baseBowerDeps = ['modernizr']
       , nodeDeps      = baseNodeDeps.concat(this.buildPackageList(this.devDeps, 'npm'))
       , bowerDeps     = baseBowerDeps.concat(this.buildPackageList(this.devDeps, 'bower'))
