@@ -13,7 +13,7 @@ var fs          = require('fs')
 var cpGen = module.exports = yeoman.Base.extend({
 
   constructor: function(){
-    // yeoman.Base.apply(this, arguments);
+    yeoman.Base.apply(this, arguments);
     this.argument('appname', { type: String, required: false, optional: true });
   },
 
