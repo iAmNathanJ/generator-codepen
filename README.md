@@ -42,7 +42,7 @@ During setup you can choose from the following...
 Generator-codepen requires [Node.js](http://nodejs.org/) and [Yeoman](http://yeoman.io/). Some configurations require [Ruby](http://www.ruby-lang.org/) and their respective gems installed, such as Slim.
   
 ### 1. Install the generator
-`npm install -g https://github.com/iAmNathanJ/generator-codepen.git`
+`npm install -g git+https://github.com/iAmNathanJ/generator-codepen.git`
 
 ### 2. Generate your pen
 `yo codepen`
