@@ -1,6 +1,7 @@
 'use strict';
 
-var express     = require('express')
+var fs          = require('fs')
+  , express     = require('express')
   , hogan       = require('hogan-express')
   , domain      = require('domain')
   , wiredep     = require('wiredep').stream
@@ -8,7 +9,9 @@ var express     = require('express')
   , rename      = require('gulp-rename')
   , watch       = require('gulp-watch')
   , livereload  = require('gulp-livereload')
-  , injectRL    = require('gulp-inject-reload');
+  , injectRL    = require('gulp-inject-reload')
+  , inject      = require('gulp-inject')
+  , escape      = require('escape-html');
 
 // Define Gulp Paths
 var paths = {
@@ -100,6 +103,10 @@ var spinUpExpress = function(){
       res.render('index');
     });
     
+    app.post('/', function(req, res){
+      gulp.run(['pub']);
+    });
+    
     app.listen(3000);
   });
 };
@@ -125,7 +132,27 @@ gulp.task('watch', watchFiles);
 gulp.task('build', ['wiredep', 'html', 'css', 'js']);
 gulp.task('default', ['build', 'watch', 'serve']);
 
+var stringifyFile = function(file){
+  // Double escape json to escape ampersands
+  return escape(escape(JSON.stringify(file)));
+};
+
+var buildCodepenData = function(files){
+  return files.reduce(function(prevFile, curFile){
+      return prevFile + fs.readFileSync(curFile, 'utf8', function(err, data){
+        if(err) console.log(err);
+        return stringifyFile(data);
+      });
+    }, '');
+};
+
 gulp.task('pub', function(){
   // PUBLISH TO CODEPEN
+  console.log(buildCodepenData(['./codepen/codepen.jade', './codepen/codepen.styl', './codepen/codepen.js']));
+  // var file = gulp.src(['./codepen/codepen.jade', './codepen/codepen.styl']);
+  // gulp.src(paths.index.src)
+  //   .pipe( inject(file, {transform: stringifyFile}) )
+  //   .pipe( gulp.dest(paths.index.dest) )
+  //   .pipe( livereload() );
 });
 

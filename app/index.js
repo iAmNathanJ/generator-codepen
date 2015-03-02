@@ -118,7 +118,9 @@ var cpGen = module.exports = yeoman.Base.extend({
       this.destinationPath('./build/index.html'),
       {
         penTitle: this.options.penTitle,
-        ext: this.devDeps.htmlPre.ext
+        htmlPre: this.devDeps.htmlPre,
+        cssPre: this.devDeps.cssPre,
+        jsPre: this.devDeps.jsPre
       }
     );
 

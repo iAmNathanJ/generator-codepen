@@ -5,17 +5,36 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <title>${ penTitle }</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    
     <!-- bower:css -->
     <!-- endbower -->
+    
+    <link rel="stylesheet" href="build/publish.css">
     <link rel="stylesheet" href="build/codepen.css">
     <script src="../bower_components/modernizr/modernizr.js"></script>
   </head>
-  <body>
 
-    {{> markup }}
+  <body>
+    <header class="publish">
+      <form action="" method="post">
+        <!-- inject:${ htmlPre.ext } -->
+        <!-- endinject -->
+        <!-- inject:${ cssPre.ext } -->
+        <!-- endinject -->
+        <!-- inject:${ jsPre.ext } -->
+        <!-- endinject -->
+        <input type="text">
+        <button>Publish</button>
+      </form>
+    </header>
+
+    <div class="markup">
+      {{> markup }}
+    </div>
 
     <!-- bower:js -->
     <!-- endbower -->
+
     <script src="build/codepen.js"></script>
   </body>
 </html>
