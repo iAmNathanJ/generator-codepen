@@ -13,7 +13,7 @@ var fs          = require('fs')
 var cpGen = module.exports = yeoman.Base.extend({
 
   constructor: function(){
-    yeoman.Base.apply(this, arguments);
+    // yeoman.Base.apply(this, arguments);
     this.argument('appname', { type: String, required: false, optional: true });
   },
 
@@ -146,7 +146,7 @@ var cpGen = module.exports = yeoman.Base.extend({
     // Where conflicts are handled (used internally)
   },
   install: function(){
-    var baseNodeDeps  = ['express', 'hogan-express', 'gulp', 'wiredep', 'gulp-rename', 'gulp-livereload', 'connect-livereload', 'gulp-watch']
+    var baseNodeDeps  = ['express', 'hogan-express', 'wiredep', 'gulp', 'gulp-rename', 'gulp-livereload', 'gulp-inject-reload', 'gulp-watch']
       , baseBowerDeps = ['modernizr']
       , nodeDeps      = baseNodeDeps.concat(this.buildPackageList(this.devDeps, 'npm'))
       , bowerDeps     = baseBowerDeps.concat(this.buildPackageList(this.devDeps, 'bower'))

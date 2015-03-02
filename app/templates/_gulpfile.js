@@ -7,7 +7,8 @@ var express     = require('express')
   , gulp        = require('gulp')
   , rename      = require('gulp-rename')
   , watch       = require('gulp-watch')
-  , livereload  = require('gulp-livereload');
+  , livereload  = require('gulp-livereload'),
+  , injectRL    = require('gulp-inject-reload');
 
 // Define Gulp Paths
 var paths = {
@@ -43,6 +44,7 @@ var clientDeps = function(){
         directory: './bower_components/',
         bowerJson: require('./bower.json')
       }) )
+      .pipe( injectRL() )
       .pipe( gulp.dest(paths.index.dest) )
       .pipe( livereload() );
   });
@@ -91,7 +93,7 @@ var spinUpExpress = function(){
     app.set('partials', {markup: 'markup'});
     app.engine('html', hogan);
     
-    app.use('/bower_components', express.static(__dirname + '/bower_components'))
+    app.use('/bower_components', express.static(__dirname + '/bower_components'));
     app.use('/build', express.static(__dirname + '/build'));
 
     app.get('/', function(req, res){
@@ -121,7 +123,7 @@ gulp.task('js', compileJs);
 gulp.task('serve', spinUpExpress);
 gulp.task('watch', watchFiles);
 gulp.task('build', ['wiredep', 'html', 'css', 'js']);
-gulp.task('default', ['build', 'serve', 'watch']);
+gulp.task('default', ['build', 'watch', 'serve']);
 
 gulp.task('pub', function(){
   // PUBLISH TO CODEPEN
