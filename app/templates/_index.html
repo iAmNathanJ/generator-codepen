@@ -9,21 +9,18 @@
     <!-- bower:css -->
     <!-- endbower -->
     
-    <link rel="stylesheet" href="build/publish.css">
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Open+Sans" type="text/css">
+    <link rel="stylesheet" href="publish/publish.css">
     <link rel="stylesheet" href="build/codepen.css">
     <script src="../bower_components/modernizr/modernizr.js"></script>
   </head>
 
   <body>
     <header class="publish">
-      <form action="" method="post">
-        <!-- inject:${ htmlPre.ext } -->
+      <form action="http://codepen.io/pen/define/" method="post" target="_blank">
+        <!-- inject:html -->
         <!-- endinject -->
-        <!-- inject:${ cssPre.ext } -->
-        <!-- endinject -->
-        <!-- inject:${ jsPre.ext } -->
-        <!-- endinject -->
-        <input type="text">
+        <input type="text" value="${ penTitle }">
         <button>Publish</button>
       </form>
     </header>

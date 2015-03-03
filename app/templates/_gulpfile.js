@@ -1,17 +1,19 @@
 'use strict';
 
 var fs          = require('fs')
+  , domain      = require('domain')
   , express     = require('express')
   , hogan       = require('hogan-express')
-  , domain      = require('domain')
   , wiredep     = require('wiredep').stream
   , gulp        = require('gulp')
   , rename      = require('gulp-rename')
   , watch       = require('gulp-watch')
   , livereload  = require('gulp-livereload')
+  , open        = require('gulp-open')
   , injectRL    = require('gulp-inject-reload')
   , inject      = require('gulp-inject')
-  , escape      = require('escape-html');
+  , escape      = require('escape-html')
+  , concatf     = require('concat-files');
 
 // Define Gulp Paths
 var paths = {
@@ -49,7 +51,7 @@ var clientDeps = function(){
       }) )
       .pipe( injectRL() )
       .pipe( gulp.dest(paths.index.dest) )
-      .pipe( livereload() );
+      .pipe( open('', {url: 'http://localhost:3000'}) );
   });
 }
 
@@ -86,7 +88,7 @@ var compileJs = function(){
 };
 
 // Create Server
-var spinUpExpress = function(){
+var startExpress = function(){
   
   errorLogger.run(function(){
     var app = express();
@@ -98,16 +100,62 @@ var spinUpExpress = function(){
     
     app.use('/bower_components', express.static(__dirname + '/bower_components'));
     app.use('/build', express.static(__dirname + '/build'));
+    app.use('/publish', express.static(__dirname + '/publish'));
 
     app.get('/', function(req, res){
       res.render('index');
-    });
-    
-    app.post('/', function(req, res){
-      gulp.run(['pub']);
+      gulp.run(['inject']);
     });
     
     app.listen(3000);
+  });
+};
+
+var getFileContents = function(path){
+  return fs.readFileSync(path, 'utf8', function(err, data){
+      if(err) return console.error(err);
+      return data;
+    });
+}
+
+var writeData = function(){
+  var injection
+    , data = JSON.stringify({
+    title                 : 'Pen',
+    description           : '',
+    html                  : getFileContents('./codepen/codepen.${ htmlPre.ext }'),
+    html_pre_processor    : '${ htmlPre.codepen }',
+    css                   : getFileContents('./codepen/codepen.${ cssPre.ext }'),
+    css_pre_processor     : '${ cssPre.codepen }',
+    css_pre_processor_lib : '',
+    css_starter           : 'neither',
+    css_prefix            : '${ cssPost.codepen }',
+    js                    : getFileContents('./codepen/codepen.${ jsPre.ext }'),
+    js_pre_processor      : '${ jsPre.codepen }',
+    js_modernizr          : 'true',
+    js_library            : '${ jsLib.codepen }',
+    html_classes          : '',
+    head                  : '<meta name="viewport" content="width=device-width">',
+    css_external          : '', // semi-colon separate multiple files
+    js_external           : '' // semi-colon separate multiple files
+  });
+  
+  injection = '<input type="hidden" name="data" value=\'' + data + '\'>';
+
+  fs.writeFile('./publish/codepenJSON.html', escape(injection), function(err){
+    if(err) console.error(err);
+  });
+};
+
+var injectData = function(){
+  var source = gulp.src('./publish/codepenJSON.html');
+  errorLogger.run(function(){
+    gulp.src(paths.index.src)
+      .pipe( inject(source, {transform: function(path, file){
+        return file.contents.toString('utf8');
+      }}) )
+      .pipe( gulp.dest(paths.index.dest) )
+      .pipe( livereload() );
   });
 };
 
@@ -116,43 +164,23 @@ var watchFiles = function(){
   errorLogger.run(function(){
     livereload.listen();
     gulp.watch('./bower_components/*', ['wiredep']);
-    gulp.watch('./codepen/*.${ htmlPre.ext }', ['html']);
-    gulp.watch('./codepen/*.${ cssPre.ext }', ['css']);
-    gulp.watch('./codepen/*.${ jsPre.ext }', ['js']);
+    gulp.watch('./codepen/*.${ htmlPre.ext }', ['html', 'inject']);
+    gulp.watch('./codepen/*.${ cssPre.ext }', ['css', 'inject']);
+    gulp.watch('./codepen/*.${ jsPre.ext }', ['js', 'inject']);
   });
 };
 
-// Define Tasks
+// Tasks
 gulp.task('wiredep', clientDeps);
 gulp.task('html', compileHtml);
 gulp.task('css', compileCss);
 gulp.task('js', compileJs);
-gulp.task('serve', spinUpExpress);
-gulp.task('watch', watchFiles);
 gulp.task('build', ['wiredep', 'html', 'css', 'js']);
-gulp.task('default', ['build', 'watch', 'serve']);
+gulp.task('serve', ['build'], startExpress);
+gulp.task('watch', watchFiles);
+gulp.task('default', ['serve', 'watch']);
 
-var stringifyFile = function(file){
-  // Double escape json to escape ampersands
-  return escape(escape(JSON.stringify(file)));
-};
+gulp.task('write', writeData);
+gulp.task('inject', ['write'], injectData);
 
-var buildCodepenData = function(files){
-  return files.reduce(function(prevFile, curFile){
-      return prevFile + fs.readFileSync(curFile, 'utf8', function(err, data){
-        if(err) console.log(err);
-        return stringifyFile(data);
-      });
-    }, '');
-};
-
-gulp.task('pub', function(){
-  // PUBLISH TO CODEPEN
-  console.log(buildCodepenData(['./codepen/codepen.jade', './codepen/codepen.styl', './codepen/codepen.js']));
-  // var file = gulp.src(['./codepen/codepen.jade', './codepen/codepen.styl']);
-  // gulp.src(paths.index.src)
-  //   .pipe( inject(file, {transform: stringifyFile}) )
-  //   .pipe( gulp.dest(paths.index.dest) )
-  //   .pipe( livereload() );
-});
 

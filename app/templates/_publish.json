@@ -1,0 +1,36 @@
+{
+  "title": "",
+  "description": "",
+  "html": "",
+  "html_pre_processor": "none",
+  "css": "",
+  "css_pre_processor": "none",
+  // "css_pre_processor_lib": "bourbon" || "compass" || "nib" || "lesshat",
+  "css_starter": "normalize",
+  "css_prefix": "neither",
+  "js": "",
+  "js_pre_processor": "none",
+  "js_modernizr": "true", // MUST
+  "js_library": "",
+  "html_classes": "",
+  "head": "<meta name='viewport' content='width=device-width'>",
+  "css_external": "", // semi-colon separate multiple files
+  "js_external": "" // semi-colon separate multiple files
+}
+// title                 : "New Pen!",
+// description           : "It's about stuff.",
+// html                  : "<div>HTML here.</div>",
+// html_pre_processor    : "none" || "slim" || "haml" || "markdown",
+// css                   : "html { color: red; }",
+// css_pre_processor     : "none" || "less" || "scss" || "sass" || "stylus",
+// css_pre_processor_lib : "bourbon" || "compass" || "nib" || "lesshat",
+// css_starter           : "normalize" || "reset" || "neither",
+// css_prefix            : "autoprefixer" || "prefixfree" || "neither",
+// js                    : "alert('test');",
+// js_pre_processor      : "none" || "coffeescript" || "traceur" || "livescript",
+// js_modernizr          : "true" || "false",
+// js_library            : "jquery" || "mootools" || "prototype",
+// html_classes          : "loading",
+// head                  : "<meta name='viewport' content='width=device-width'>",
+// css_external          : "http://yoursite.com/style.css", // semi-colon separate multiple files
+// js_external           : "http://yoursite.com/script.js" // semi-colon separate multiple files

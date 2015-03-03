@@ -6,8 +6,8 @@ var fs          = require('fs')
   , yeoman      = require('yeoman-generator')
   , chalk       = require('chalk')
   , yosay       = require('yosay')
-  , getPrompts  = require('./bin/prompts')
-  , deps        = require('./bin/deps');
+  , getPrompts  = require('./lib/prompts')
+  , deps        = require('./lib/deps');
 
 
 var cpGen = module.exports = yeoman.Base.extend({
@@ -143,12 +143,20 @@ var cpGen = module.exports = yeoman.Base.extend({
       { comment: '' }
     );
 
+    this.fs.copy(
+      this.templatePath('_publish.css'),
+      this.destinationPath('./publish/publish.css')
+    );
+
   },
   conflicts: function(){
     // Where conflicts are handled (used internally)
   },
   install: function(){
-    var baseNodeDeps  = ['express', 'hogan-express', 'wiredep', 'gulp', 'gulp-rename', 'gulp-livereload', 'gulp-inject-reload', 'gulp-watch', 'gulp-inject', 'escape-html']
+
+    this.log('\nRunning npm and bower install...\n');
+
+    var baseNodeDeps  = ['express', 'hogan-express', 'wiredep', 'gulp', 'gulp-rename', 'gulp-livereload', 'gulp-open', 'gulp-inject-reload', 'gulp-watch', 'gulp-inject', 'escape-html']
       , baseBowerDeps = ['modernizr']
       , nodeDeps      = baseNodeDeps.concat(this.buildPackageList(this.devDeps, 'npm'))
       , bowerDeps     = baseBowerDeps.concat(this.buildPackageList(this.devDeps, 'bower'))
@@ -163,7 +171,7 @@ var cpGen = module.exports = yeoman.Base.extend({
       '\nYou\'re all set up!\n' +
       '1. Run `gulp` to start the server.\n' +
       '2. Open ./codepen in your favorite editor.\n' +
-      '3. Navigate your browser to http://localhost:3000 ...enjoy.\n'
+      '3. Enjoy.\n'
       // 'Run "gulp pub" to publish to Codepen.\n'
     ));
   }

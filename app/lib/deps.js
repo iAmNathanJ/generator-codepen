@@ -9,19 +9,22 @@ module.exports = function deps(name){
       name: 'HTML',
       install: false,
       manager: false,
-      ext: 'html'
+      ext: 'html',
+      codepen: 'none'
     },
     css: {
       name: 'CSS',
       install: false,
       manager: false,
-      ext: 'css'
+      ext: 'css',
+      codepen: 'none'
     },
     javascript: {
       name: 'JavaScript',
       install: false,
       manager: false,
-      ext: 'js'
+      ext: 'js',
+      codepen: 'none'
     },
 
     // HTML Pre Processors
@@ -29,25 +32,29 @@ module.exports = function deps(name){
       name: 'Haml',
       install: 'gulp-haml',
       manager: 'npm',
-      ext: 'haml'
+      ext: 'haml',
+      codepen: 'haml'
     },
     jade: {
       name: 'Jade',
       install: 'gulp-jade',
       manager: 'npm',
-      ext: 'jade'
+      ext: 'jade',
+      codepen: 'jade'
     },
     markdown: {
       name: 'Markdown',
       install: 'gulp-markdown',
       manager: 'npm',
-      ext: 'md'
+      ext: 'md',
+      codepen: 'markdown'
     },
     slim: {
       name: 'Slim',
       install: 'gulp-slim',
       manager: 'npm',
-      ext: 'slim'
+      ext: 'slim',
+      codepen: 'slim'
     },
 
     // CSS Pre Processors
@@ -55,25 +62,29 @@ module.exports = function deps(name){
       name: 'Less',
       install: 'gulp-less',
       manager: 'npm',
-      ext: 'less'
+      ext: 'less',
+      codepen: 'less'
     },
     sass: {
       name: 'Sass',
       install: 'gulp-ruby-sass',
       manager: 'npm',
-      ext: 'sass'
+      ext: 'sass',
+      codepen: 'sass'
     },
     scss: {
       name: 'Scss',
       install: 'gulp-sass',
       manager: 'npm',
-      ext: 'scss'
+      ext: 'scss',
+      codepen: 'scss'
     },
     stylus: {
       name: 'Stylus',
       install: 'gulp-stylus',
       manager: 'npm',
-      ext: 'styl'
+      ext: 'styl',
+      codepen: 'stylus'
     },
 
     // JS Pre Processors
@@ -81,19 +92,22 @@ module.exports = function deps(name){
       name: 'CoffeeScript',
       install: 'gulp-coffee',
       manager: 'npm',
-      ext: 'coffee'
+      ext: 'coffee',
+      codepen: 'coffeescript'
     },
     livescript: {
       name: 'LiveScript',
       install: 'gulp-livescript',
       manager: 'npm',
-      ext: 'ls'
+      ext: 'ls',
+      codepen: 'livescript'
     },
     traceur: {
       name: 'Traceur',
       install: 'gulp-traceur',
       manager: 'npm',
-      ext: 'js'
+      ext: 'js',
+      codepen: 'traceur'
     },
 
     // CSS Equalizers
@@ -101,13 +115,15 @@ module.exports = function deps(name){
       name: 'Normalize.css',
       install: 'normalize.css',
       manager: 'bower',
-      ext: 'css'
+      ext: 'css',
+      codepen: 'normalize'
     },
     reset: {
       name: 'Reset.css',
       install: 'pen_components',
       manager: 'local',
-      ext: 'css'
+      ext: 'css',
+      codepen: 'reset'
     },
 
     // CSS Post Processors
@@ -115,13 +131,15 @@ module.exports = function deps(name){
       name: 'Autoprefixer',
       install: 'gulp-autoprefixer',
       manager: 'npm',
-      ext: null
+      ext: null,
+      codepen: 'autoprefixer'
     },
     prefixfree: {
       name: '-prefix-free',
       install: 'pen_components',
       manager: 'local',
-      ext: null
+      ext: null,
+      codepen: 'prefixfree'
     },
 
     // JS Libraries
@@ -129,25 +147,29 @@ module.exports = function deps(name){
       name: 'Angular',
       install: 'angular',
       manager: 'bower',
-      ext: 'js'
+      ext: 'js',
+      codepen: 'angular'
     },
     jquery: {
       name: 'jQuery',
       install: 'jquery',
       manager: 'bower',
-      ext: 'js'
+      ext: 'js',
+      codepen: 'jquery'
     },
     mootools: {
       name: 'MooTools',
       install: 'mootools',
       manager: 'bower',
-      ext: 'js'
+      ext: 'js',
+      codepen: 'mootools'
     },
     prototype: {
       name: 'Prototype',
       install: 'prototype',
       manager: 'bower',
-      ext: 'js'
+      ext: 'js',
+      codepen: 'prototype'
     }
 
     // JS Feature Detection
@@ -158,7 +180,8 @@ module.exports = function deps(name){
     //   name: 'Modernizr',
     //   install: 'modernizr',
     //   manager: 'bower',
-    //   ext: 'js'
+    //   ext: 'js',
+    // codepen: ''
     // }
   };
 
