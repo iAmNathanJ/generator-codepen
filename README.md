@@ -1,8 +1,8 @@
 # generator-codepen
 
-**Use Yeoman to set up a fast local development environment for playing with ideas or learning.**
+> Use Yeoman to set up a fast local development environment for playing with ideas or learning.
 
-Generator-codepen is currently being developed. It's purpose is to offer the same development options you find on [Codepen](http://codepen.com/), but on your local machine. Use [Yeoman](http://yeoman.io/) to scaffold your pen and Gulp to keep you moving as you develop.
+Generator-codepen is currently being developed. It's purpose is to offer the same development options you find on [Codepen](http://codepen.com/), but on your local machine. Use [Yeoman](http://yeoman.io/) to scaffold your pen and Gulp to keep you moving as you develop. Once you're satisfied with your tinkerings, you can auto-fill to Codepen and publish your work.
 
 ---
 
