@@ -127,25 +127,31 @@ var cpGen = module.exports = yeoman.Base.extend({
     // HTML
     this.fs.copyTpl(
       this.templatePath('_blank'),
-      this.destinationPath('./codepen/codepen.' + this.devDeps.htmlPre.ext),
+      this.destinationPath(this.options.penTitle + '.' + this.devDeps.htmlPre.ext),
       { comment: '' }
     );
     // CSS
     this.fs.copyTpl(
       this.templatePath('_blank'),
-      this.destinationPath('./codepen/codepen.' + this.devDeps.cssPre.ext),
+      this.destinationPath(this.options.penTitle + '.' + this.devDeps.cssPre.ext),
       { comment: '' }
     );
     // JS
     this.fs.copyTpl(
       this.templatePath('_blank'),
-      this.destinationPath('./codepen/codepen.' + this.devDeps.jsPre.ext),
+      this.destinationPath(this.options.penTitle + '.' + this.devDeps.jsPre.ext),
+      { comment: '' }
+    );
+    // Codepen Data File
+    this.fs.copyTpl(
+      this.templatePath('_blank'),
+      this.destinationPath('./build/partials/codepen-data.html'),
       { comment: '' }
     );
 
     this.fs.copy(
       this.templatePath('_publish.css'),
-      this.destinationPath('./publish/publish.css')
+      this.destinationPath('./build/css/publish.css')
     );
 
   },
@@ -156,7 +162,18 @@ var cpGen = module.exports = yeoman.Base.extend({
 
     this.log('\nRunning npm and bower install...\n');
 
-    var baseNodeDeps  = ['express', 'hogan-express', 'wiredep', 'gulp', 'gulp-rename', 'gulp-livereload', 'gulp-open', 'gulp-inject-reload', 'gulp-watch', 'gulp-inject', 'escape-html']
+    var baseNodeDeps  = [ 'express'
+                        , 'body-parser'
+                        , 'hogan-express'
+                        , 'wiredep'
+                        , 'gulp'
+                        , 'gulp-rename'
+                        , 'gulp-livereload'
+                        , 'gulp-inject-reload'
+                        , 'gulp-open'
+                        , 'gulp-watch'
+                        , 'escape-html']
+
       , baseBowerDeps = ['modernizr']
       , nodeDeps      = baseNodeDeps.concat(this.buildPackageList(this.devDeps, 'npm'))
       , bowerDeps     = baseBowerDeps.concat(this.buildPackageList(this.devDeps, 'bower'))

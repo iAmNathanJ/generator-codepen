@@ -2,7 +2,9 @@
 
 var fs          = require('fs')
   , domain      = require('domain')
+  , path        = require('path')
   , express     = require('express')
+  , bodyParser  = require('body-parser')
   , hogan       = require('hogan-express')
   , wiredep     = require('wiredep').stream
   , gulp        = require('gulp')
@@ -11,7 +13,6 @@ var fs          = require('fs')
   , livereload  = require('gulp-livereload')
   , open        = require('gulp-open')
   , injectRL    = require('gulp-inject-reload')
-  , inject      = require('gulp-inject')
   , escape      = require('escape-html')
   , concatf     = require('concat-files');
 
@@ -22,23 +23,23 @@ var paths = {
     dest: './build'
   },
   html: {
-    src: './codepen/codepen.${ htmlPre.ext }',
-    dest: './build'
+    src: './${ penTitle }.${ htmlPre.ext }',
+    dest: './build/partials'
   },
   css: {
-    src: './codepen/codepen.${ cssPre.ext }',
-    dest: './build'
+    src: './${ penTitle }.${ cssPre.ext }',
+    dest: './build/css'
   },
   js: {
-    src: './codepen/codepen.${ jsPre.ext }',
-    dest: './build'
+    src: './${ penTitle }.${ jsPre.ext }',
+    dest: './build/js'
   }
 };
 
 // Handle Errors
 var errorLogger = domain.create();
 errorLogger.on('error', function(err){
-  console.log('Error: ' + err.message + '\nFile: ' + err.fileName + ' : Line ' + err.lineNumber);
+  console.error(err);
 });
 
 // Wire Client Side Dependencies
@@ -90,72 +91,69 @@ var compileJs = function(){
 // Create Server
 var startExpress = function(){
   
-  errorLogger.run(function(){
-    var app = express();
-    
-    app.set('views', __dirname + '/build/');
-    app.set('view engine', 'html');
-    app.set('partials', {markup: 'markup'});
-    app.engine('html', hogan);
-    
-    app.use('/bower_components', express.static(__dirname + '/bower_components'));
-    app.use('/build', express.static(__dirname + '/build'));
-    app.use('/publish', express.static(__dirname + '/publish'));
+  var app = express();
 
-    app.get('/', function(req, res){
-      res.render('index');
-      gulp.run(['inject']);
-    });
-    
-    app.listen(3000);
+  app.set('views', __dirname + '/build');
+  app.set('view engine', 'html');
+  app.set('layout', 'layout')
+  app.set('partials', {
+    markup: 'partials/markup',
+    codepenData: 'partials/codepen-data'
   });
+  app.engine('html', hogan);
+
+  app.use('/build', express.static(__dirname + '/build'));
+  app.use('/css', express.static(__dirname + '/build/css'));
+  app.use('/js', express.static(__dirname + '/build/js'));
+  app.use('/bower_components', express.static(__dirname + '/bower_components'));
+  app.use('/publish', express.static(__dirname + '/build/publish'));
+
+  app.get('/', function(req, res){
+    res.render('index');
+  });
+
+  app.listen(3000);
+
 };
 
 var getFileContents = function(path){
   return fs.readFileSync(path, 'utf8', function(err, data){
-      if(err) return console.error(err);
-      return data;
-    });
+    if(err) return console.error(err);
+    return data;
+  });
 }
 
-var writeData = function(){
-  var injection
-    , data = JSON.stringify({
-    title                 : 'Pen',
+var codepenHiddenInput = function(){
+
+  var data = JSON.stringify({
+    
+    title                 : '${ penTitle }',
     description           : '',
-    html                  : getFileContents('./codepen/codepen.${ htmlPre.ext }'),
+    html                  : getFileContents('./${ penTitle }.${ htmlPre.ext }'),
     html_pre_processor    : '${ htmlPre.codepen }',
-    css                   : getFileContents('./codepen/codepen.${ cssPre.ext }'),
+    css                   : getFileContents('./${ penTitle }.${ cssPre.ext }'),
     css_pre_processor     : '${ cssPre.codepen }',
     css_pre_processor_lib : '',
     css_starter           : 'neither',
     css_prefix            : '${ cssPost.codepen }',
-    js                    : getFileContents('./codepen/codepen.${ jsPre.ext }'),
+    js                    : getFileContents('./${ penTitle }.${ jsPre.ext }'),
     js_pre_processor      : '${ jsPre.codepen }',
     js_modernizr          : 'true',
-    js_library            : '${ jsLib.codepen }',
+    js_library            : '',
     html_classes          : '',
     head                  : '<meta name="viewport" content="width=device-width">',
     css_external          : '', // semi-colon separate multiple files
     js_external           : '' // semi-colon separate multiple files
-  });
-  
-  injection = '<input type="hidden" name="data" value=\'' + data + '\'>';
 
-  fs.writeFile('./publish/codepenJSON.html', escape(injection), function(err){
-    if(err) console.error(err);
   });
+
+  return '<input type="hidden" name="data" value="' + escape(data) + '">';
 };
 
-var injectData = function(){
-  var source = gulp.src('./publish/codepenJSON.html');
-  errorLogger.run(function(){
-    gulp.src(paths.index.src)
-      .pipe( inject(source, {transform: function(path, file){
-        return file.contents.toString('utf8');
-      }}) )
-      .pipe( gulp.dest(paths.index.dest) )
-      .pipe( livereload() );
+var writeCodepenData = function(cb){
+  fs.writeFile('./build/partials/codepen-data.html', codepenHiddenInput(), function(err){
+    if(err) console.error(err);
+    if(cb) cb();
   });
 };
 
@@ -164,23 +162,21 @@ var watchFiles = function(){
   errorLogger.run(function(){
     livereload.listen();
     gulp.watch('./bower_components/*', ['wiredep']);
-    gulp.watch('./codepen/*.${ htmlPre.ext }', ['html', 'inject']);
-    gulp.watch('./codepen/*.${ cssPre.ext }', ['css', 'inject']);
-    gulp.watch('./codepen/*.${ jsPre.ext }', ['js', 'inject']);
+    gulp.watch('./*.${ htmlPre.ext }', ['write', 'html']);
+    gulp.watch('./*.${ cssPre.ext }', ['write', 'css']);
+    gulp.watch('./*.${ jsPre.ext }', ['write', 'js']);
   });
 };
 
 // Tasks
+gulp.task('write', writeCodepenData);
 gulp.task('wiredep', clientDeps);
 gulp.task('html', compileHtml);
 gulp.task('css', compileCss);
 gulp.task('js', compileJs);
-gulp.task('build', ['wiredep', 'html', 'css', 'js']);
+gulp.task('build', ['write', 'wiredep', 'html', 'css', 'js']);
 gulp.task('serve', ['build'], startExpress);
 gulp.task('watch', watchFiles);
 gulp.task('default', ['serve', 'watch']);
-
-gulp.task('write', writeData);
-gulp.task('inject', ['write'], injectData);
 
 

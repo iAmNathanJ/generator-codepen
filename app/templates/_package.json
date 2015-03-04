@@ -1,6 +1,9 @@
 {
   "name": "<%= penTitle %>",
   "version": "0.0.0",
+  "scripts": {
+    "start": "gulp"
+  },
   "dependencies": {},
   "devDependencies": {}
 }

@@ -10,28 +10,27 @@
     <!-- endbower -->
     
     <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Open+Sans" type="text/css">
-    <link rel="stylesheet" href="publish/publish.css">
-    <link rel="stylesheet" href="build/codepen.css">
-    <script src="../bower_components/modernizr/modernizr.js"></script>
+    <link rel="stylesheet" href="css/publish.css">
+    <link rel="stylesheet" href="css/${ penTitle }.css">
+    <script src="bower_components/modernizr/modernizr.js"></script>
   </head>
 
   <body>
     <header class="publish">
-      <form action="http://codepen.io/pen/define/" method="post" target="_blank">
-        <!-- inject:html -->
-        <!-- endinject -->
+      <form action="/publish" method="post">
+        {{> codepenData}}
         <input type="text" value="${ penTitle }">
         <button>Publish</button>
       </form>
     </header>
 
     <div class="markup">
-      {{> markup }}
+      {{> markup}}
     </div>
 
     <!-- bower:js -->
     <!-- endbower -->
 
-    <script src="build/codepen.js"></script>
+    <script src="js/${ penTitle }.js"></script>
   </body>
 </html>

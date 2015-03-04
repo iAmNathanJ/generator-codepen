@@ -87,17 +87,24 @@ optgroup {
 }
 .publish button,
 .publish input {
-  padding: 17px;
+  padding: 14px;
   height: 100%;
   font-family: 'Open Sans';
   color: #efefef;
   text-transform: uppercase;
-  background: #444;
+  background: #555;
   outline: 0;
   border: 0;
 }
+.publish button:hover {
+  background: #666;
+}
 .publish input {
-  background: #555;
+  margin-right: -4px;
+  background: #333;
+}
+.publish input:hover {
+  background: #3f3f3f;
 }
 .markup {
   margin: 70px 20px 0;
