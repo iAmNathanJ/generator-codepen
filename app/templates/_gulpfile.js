@@ -12,7 +12,6 @@ var fs          = require('fs')
   , watch       = require('gulp-watch')
   , livereload  = require('gulp-livereload')
   , open        = require('gulp-open')
-  , injectRL    = require('gulp-inject-reload')
   , escape      = require('escape-html')
   , concatf     = require('concat-files');
 
@@ -50,7 +49,6 @@ var clientDeps = function(){
         directory: './bower_components/',
         bowerJson: require('./bower.json')
       }) )
-      .pipe( injectRL() )
       .pipe( gulp.dest(paths.index.dest) )
       .pipe( open('', {url: 'http://localhost:3000'}) );
   });

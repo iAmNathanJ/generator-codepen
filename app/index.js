@@ -169,7 +169,6 @@ var cpGen = module.exports = yeoman.Base.extend({
                         , 'gulp'
                         , 'gulp-rename'
                         , 'gulp-livereload'
-                        , 'gulp-inject-reload'
                         , 'gulp-open'
                         , 'gulp-watch'
                         , 'escape-html']
