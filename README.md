@@ -57,8 +57,8 @@ More on Yeoman...
 Contributions will be welcome once I finish the generator. Hopefully within the week.
 
 ### Todo:
-##### 1. Write Tests
-##### 2. Add "Publish to Codepen" Functionality
+- [ ] Write Tests
+- [ ] Add "Publish to Codepen" Functionality
 
 ---
 
