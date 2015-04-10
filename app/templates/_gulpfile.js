@@ -12,8 +12,7 @@ var fs          = require('fs')
   , watch       = require('gulp-watch')
   , livereload  = require('gulp-livereload')
   , open        = require('gulp-open')
-  , escape      = require('escape-html')
-  , concatf     = require('concat-files');
+  , escape      = require('escape-html');
 
 // Define Gulp Paths
 var paths = {
