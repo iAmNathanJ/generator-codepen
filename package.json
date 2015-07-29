@@ -10,14 +10,15 @@
   },
   "author": {
     "name": "Nathan Jacobs",
-    "email": "",
-    "url": "https://github.com/iAmNathanJ"
+    "email": "hello@iamnathanj.com",
+    "url": "https://github.com/iamnathanj"
   },
   "engines": {
     "node": ">=0.10.0"
   },
   "scripts": {
-    "test": "mocha"
+    "test": "mocha",
+    "start": "gulp"
   },
   "files": [
     "app"

@@ -18,7 +18,7 @@ var cpGen = module.exports = yeoman.Base.extend({
   },
 
   init: function(){
-    
+
     // Your initialization methods (checking current project state, getting configs, etc
     this.devDeps = {};
     this.localDeps = {};
@@ -36,11 +36,11 @@ var cpGen = module.exports = yeoman.Base.extend({
       }
       return dependencies;
     };
-  
+
   },
 
   prompting: function(){
-    
+
     var done = this.async();
 
     // Greeting
@@ -58,10 +58,10 @@ var cpGen = module.exports = yeoman.Base.extend({
 
     // Display Prompts
     this.prompt(prompts, function (props) {
-      
+
 
       this.options.penTitle = this._.camelize(props.penTitle);
-      
+
       this.devDeps.htmlPre       = deps(props.htmlPre);
       this.devDeps.cssPre        = deps(props.cssPre);
       this.devDeps.cssEq         = deps(props.cssEq);
@@ -71,11 +71,11 @@ var cpGen = module.exports = yeoman.Base.extend({
       // this.devDeps.featureDetect = deps(props.featureDetect);
 
       this.log('\nLet\'s roll, Bob Dole.\n');
-     
+
       done();
-    
+
     }.bind(this));
-  
+
   },
 
   config: function(){
@@ -148,10 +148,10 @@ var cpGen = module.exports = yeoman.Base.extend({
       this.destinationPath('./build/partials/codepen-data.html'),
       { comment: '' }
     );
-
+    // Publish Script
     this.fs.copy(
-      this.templatePath('_publish.css'),
-      this.destinationPath('./build/css/publish.css')
+      this.templatePath('_publish.js'),
+      this.destinationPath('./publish.js')
     );
 
   },
@@ -167,19 +167,20 @@ var cpGen = module.exports = yeoman.Base.extend({
                         , 'hogan-express'
                         , 'wiredep'
                         , 'gulp'
+                        , 'gulp-concat'
                         , 'gulp-rename'
                         , 'gulp-livereload'
-                        , 'gulp-open'
-                        , 'gulp-watch'
+                        , 'gulp-plumber'
                         , 'escape-html']
 
-      , baseBowerDeps = ['modernizr']
+      , baseBowerDeps = []
       , nodeDeps      = baseNodeDeps.concat(this.buildPackageList(this.devDeps, 'npm'))
       , bowerDeps     = baseBowerDeps.concat(this.buildPackageList(this.devDeps, 'bower'))
       , localDeps     = this.buildPackageList(this.devDeps, 'local');
 
     this.npmInstall(nodeDeps, { saveDev: true });
     this.bowerInstall(bowerDeps, { save: true });
+    this.config.save();
   },
   end: function(){
     // Called last, cleanup, say good bye, etc
@@ -188,7 +189,6 @@ var cpGen = module.exports = yeoman.Base.extend({
       '1. Run `gulp` to start the server.\n' +
       '2. Open ./codepen in your favorite editor.\n' +
       '3. Enjoy.\n'
-      // 'Run "gulp pub" to publish to Codepen.\n'
     ));
   }
 
