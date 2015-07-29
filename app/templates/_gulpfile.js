@@ -8,10 +8,10 @@ var fs          = require('fs')
   , hogan       = require('hogan-express')
   , wiredep     = require('wiredep').stream
   , gulp        = require('gulp')
+  , plumber     = require('gulp-plumber')
+  , concat      = require('gulp-concat')
   , rename      = require('gulp-rename')
-  , watch       = require('gulp-watch')
   , livereload  = require('gulp-livereload')
-  , open        = require('gulp-open')
   , escape      = require('escape-html');
 
 // Define Gulp Paths
@@ -25,7 +25,7 @@ var paths = {
     dest: './build/partials'
   },
   css: {
-    src: './${ penTitle }.${ cssPre.ext }',
+    src: ['./node_modules/normalize.css/normalize.css', './${ penTitle }.${ cssPre.ext }'],
     dest: './build/css'
   },
   js: {
@@ -34,60 +34,39 @@ var paths = {
   }
 };
 
-// Handle Errors
-var errorLogger = domain.create();
-errorLogger.on('error', function(err){
-  console.error(err);
-});
-
-// Wire Client Side Dependencies
-var clientDeps = function(){
-  errorLogger.run(function(){
-    gulp.src(paths.index.src)
-      .pipe( wiredep({
-        directory: './bower_components/',
-        bowerJson: require('./bower.json')
-      }) )
-      .pipe( gulp.dest(paths.index.dest) )
-      .pipe( open('', {url: 'http://localhost:3000'}) );
-  });
-}
-
 // Compile HTML
 var compileHtml = function(){
-  errorLogger.run(function(){
-    gulp.src(paths.html.src)
-      <% if(htmlPre.install) { %>.pipe( require('${ htmlPre.install }')() )<% } %>
-      .pipe( rename('markup.html') )
-      .pipe( gulp.dest(paths.html.dest) )
-      .pipe( livereload() );
-  });
+  gulp.src(paths.html.src)
+    .pipe( plumber() )
+    <% if(htmlPre.install) { %>.pipe( require('${ htmlPre.install }')() )<% } %>
+    .pipe( rename('markup.html') )
+    .pipe( gulp.dest(paths.html.dest) )
+    .pipe( livereload() );
 };
 
 // Compile CSS
 var compileCss = function(){
-  errorLogger.run(function(){
-    gulp.src(paths.css.src)
-      <% if(cssPre.install) { %>.pipe( require('${ cssPre.install }')() )<% } %>
-      <% if(cssPost.install) { %>.pipe( require('${ cssPost.install }')() )<% } %>
-      .pipe( gulp.dest(paths.css.dest) )
-      .pipe( livereload() );
-  });
+  gulp.src(paths.css.src)
+    .pipe( plumber() )
+    <% if(cssPre.install) { %>.pipe( require('${ cssPre.install }')() )<% } %>
+    .pipe( concat('${ penTitle }.css') )
+    <% if(cssPost.install) { %>.pipe( require('${ cssPost.install }')() )<% } %>
+    .pipe( gulp.dest(paths.css.dest) )
+    .pipe( livereload() );
 };
 
 // Compile JS
 var compileJs = function(){
-  errorLogger.run(function(){
-    gulp.src(paths.js.src)
-      <% if(jsPre.install) { %>.pipe( require('${ jsPre.install }')() )<% } %>
-      .pipe( gulp.dest(paths.js.dest) )
-      .pipe( livereload() );
-  });
+  gulp.src(paths.js.src)
+    .pipe( plumber() )
+    <% if(jsPre.install) { %>.pipe( require('${ jsPre.install }')() )<% } %>
+    .pipe( gulp.dest(paths.js.dest) )
+    .pipe( livereload() );
 };
 
 // Create Server
 var startExpress = function(){
-  
+
   var app = express();
 
   app.set('views', __dirname + '/build');
@@ -99,10 +78,10 @@ var startExpress = function(){
   });
   app.engine('html', hogan);
 
-  app.use('/build', express.static(__dirname + '/build'));
   app.use('/css', express.static(__dirname + '/build/css'));
   app.use('/js', express.static(__dirname + '/build/js'));
   app.use('/bower_components', express.static(__dirname + '/bower_components'));
+  app.use('/build', express.static(__dirname + '/build'));
   app.use('/publish', express.static(__dirname + '/build/publish'));
 
   app.get('/', function(req, res){
@@ -123,7 +102,7 @@ var getFileContents = function(path){
 var codepenHiddenInput = function(){
 
   var data = JSON.stringify({
-    
+
     title                 : '${ penTitle }',
     description           : '',
     html                  : getFileContents('./${ penTitle }.${ htmlPre.ext }'),
@@ -156,24 +135,20 @@ var writeCodepenData = function(cb){
 
 // Watch Files
 var watchFiles = function(){
-  errorLogger.run(function(){
-    livereload.listen();
-    gulp.watch('./bower_components/*', ['wiredep']);
-    gulp.watch('./*.${ htmlPre.ext }', ['write', 'html']);
-    gulp.watch('./*.${ cssPre.ext }', ['write', 'css']);
-    gulp.watch('./*.${ jsPre.ext }', ['write', 'js']);
-  });
+  livereload.listen();
+  gulp.watch('./bower_components/*', ['wiredep']);
+  gulp.watch('./*.${ htmlPre.ext }', ['write', 'html']);
+  gulp.watch('./*.${ cssPre.ext }', ['write', 'css']);
+  gulp.watch('./*.${ jsPre.ext }', ['write', 'js']);
 };
 
 // Tasks
 gulp.task('write', writeCodepenData);
-gulp.task('wiredep', clientDeps);
+// gulp.task('wiredep', clientDeps);
 gulp.task('html', compileHtml);
 gulp.task('css', compileCss);
 gulp.task('js', compileJs);
-gulp.task('build', ['write', 'wiredep', 'html', 'css', 'js']);
+gulp.task('build', ['write', 'html', 'css', 'js']);
 gulp.task('serve', ['build'], startExpress);
 gulp.task('watch', watchFiles);
 gulp.task('default', ['serve', 'watch']);
-
-
